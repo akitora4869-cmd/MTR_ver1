@@ -1,0 +1,57 @@
+name: Build TRPGCharacter
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Find Maven project
+        id: project
+        shell: bash
+        run: |
+          POM="$(find . -maxdepth 3 -name pom.xml -print -quit)"
+          if [ -z "$POM" ]; then
+            echo "pom.xml が見つかりません"
+            find . -maxdepth 3 -type f | sort
+            exit 1
+          fi
+          DIR="$(dirname "$POM")"
+          echo "dir=$DIR" >> "$GITHUB_OUTPUT"
+          echo "Found Maven project: $POM"
+
+      - name: Build with Maven
+        working-directory: ${{ steps.project.outputs.dir }}
+        run: mvn -B clean package
+
+      - name: Collect JAR
+        shell: bash
+        run: |
+          JAR="$(find "${{ steps.project.outputs.dir }}/target" -maxdepth 1 -name 'TRPGCharacter-*.jar' -print -quit)"
+          if [ -z "$JAR" ]; then
+            echo "JAR が見つかりません"
+            exit 1
+          fi
+          mkdir -p build-artifact
+          cp "$JAR" build-artifact/TRPGCharacter-1.0.0.jar
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: TRPGCharacter-Paper-1.20.1
+          path: build-artifact/TRPGCharacter-1.0.0.jar
+          if-no-files-found: error
