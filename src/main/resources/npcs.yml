@@ -1,0 +1,25 @@
+# リソースパック内包型NPC設定
+#
+# /npc create <id> <表示名> でゲーム内から作成できます。
+# 右クリックすると dialogue が、そのプレイヤーだけに表示されます。
+#
+# model-data 93200 = 標準NPCモデル
+#
+# 手動設定例:
+# npcs:
+#   caretaker:
+#     name: "管理人"
+#     model-data: 93200
+#     scale: 1.0
+#     location:
+#       world: world
+#       x: 0.5
+#       y: 64.0
+#       z: 0.5
+#       yaw: 180.0
+#       pitch: 0.0
+#     dialogue:
+#       - "こんな時間に、どうしたんだい？"
+#       - "この先には近づかない方がいい。"
+
+npcs: {}

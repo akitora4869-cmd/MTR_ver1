@@ -1,0 +1,113 @@
+# アーティファクト設定
+# 同じMaterialの通常アイテムには影響しません。
+# /artifact give <player> <id> で作成した個体にだけPDCが付与されます。
+
+artifacts:
+
+  elder_sign:
+    name: "古き印"
+    material: PAPER
+    custom-model-data: 93002
+
+    description:
+      - "名状しがたい存在を退けるための印。"
+      - "手に持って右クリックすると力を解放する。"
+
+    passive:
+      # インベントリ内に所持している間、
+      # 神話生物から受ける最終ダメージを固定値軽減。
+      mythos-damage-reduction: 1
+
+    active:
+      enabled: true
+      cooldown-seconds: 30
+
+      # 固定値または 1d3 / 1d6+1 形式
+      san-cost: "1"
+
+      effect:
+        type: REPEL_MYTHOS
+        range: 8.0
+        duration-seconds: 5
+
+  shining_trapezohedron:
+    name: "輝くトラペゾヘドロン"
+    material: AMETHYST_SHARD
+    custom-model-data: 93003
+    description:
+      - "異なる世界を覗くための黒い結晶。"
+      - "神話生物の存在を異界視する。"
+      - "暗闇で覗くことは、あまりにも危険だ。"
+    passive:
+      mythos-damage-reduction: 0
+    active:
+      enabled: true
+      cooldown-seconds: 180
+      san-cost: "1d6"
+      mp-cost: 0
+      effect:
+        type: TRAPEZOHEDRON_VISION
+        range: 32.0
+        duration-seconds: 20
+
+  dream_crystalizer:
+    name: "夢のクリスタルライザー"
+    material: END_CRYSTAL
+    custom-model-data: 93004
+    description:
+      - "夢と現実の境界を越えるための結晶。"
+      - "SANとMPを代償にドリームランドへの道を開く。"
+      - "KPがドリームランドを無効化している場合は発動しない。"
+    passive:
+      mythos-damage-reduction: 0
+    active:
+      enabled: true
+      cooldown-seconds: 600
+      san-cost: "1d3"
+      mp-cost: 3
+      effect:
+        type: DREAMLAND_CRYSTALIZER
+        range: 0.0
+        duration-seconds: 5
+
+  ygolonac_hand:
+    name: "イゴーロナクの手"
+    material: RABBIT_FOOT
+    custom-model-data: 93005
+    description:
+      - "掌に口を持つ、背徳に染まった呪物。"
+      - "視線の先の探索者の精神を蝕む。"
+      - "使用者自身も正気を代償として差し出す。"
+    passive:
+      mythos-damage-reduction: 0
+    active:
+      enabled: true
+      cooldown-seconds: 30
+      san-cost: "1d3"
+      mp-cost: 0
+      effect:
+        type: YGOLONAC_HAND
+        range: 10.0
+        duration-seconds: 30
+
+  silver_key:
+    name: "銀の鍵"
+    material: TRIPWIRE_HOOK
+    custom-model-data: 93006
+    description:
+      - "時間と空間の門を開く古い銀の鍵。"
+      - "初回使用で現在地を鍵に刻む。"
+      - "再使用でワールドを越えて記憶地点へ帰還する。"
+      - "門を繰り返し開けば、向こう側もこちらを知る。"
+    passive:
+      mythos-damage-reduction: 0
+    active:
+      enabled: true
+      cooldown-seconds: 1800
+      san-cost: "1d3"
+      mp-cost: 5
+      effect:
+        type: SILVER_KEY
+        range: 0.0
+        duration-seconds: 5
+

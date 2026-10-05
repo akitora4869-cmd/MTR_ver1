@@ -1,0 +1,138 @@
+# 神話生物設定
+# /mythos summon <id> でKP/管理者が召喚できます。
+#
+# 召喚された個体だけが神話生物として扱われます。
+# 同じEntityTypeの通常Mobには影響しません。
+
+enabled: true
+
+# 周囲の神話生物を確認する周期。20tick = 1秒
+encounter-check-interval: 10
+
+mythos-creatures:
+
+  deep_one:
+    name: "深きもの"
+    entity: DROWNED
+    # 専用モデルの見た目倍率（当たり判定はDROWNEDのまま）
+    visual-scale: 1.15
+
+    # Model Engineを導入した場合はこちらを優先。
+    # Model Engine側に model id "deep_one" が存在しない場合はItemDisplayへ戻ります。
+    model:
+      enabled: true
+      engine: MODEL_ENGINE
+      id: "deep_one"
+      fallback-item-display: true
+      animations:
+        idle: "idle"
+        walk: "walk"
+        attack: "attack"
+        hurt: "hurt"
+        death: "death"
+
+    # CoC向け戦闘値
+    hp: 13
+    armor: 1
+    hit: 25
+    damage: "1d6"
+    player-armor: true
+
+    # 初めて視認した際のSANチェック
+    san-check:
+      success: "0"
+      failure: "1d6"
+
+    encounter-range: 12.0
+    require-line-of-sight: true
+
+  nightgaunt:
+    name: "ナイトゴーント"
+    entity: PHANTOM
+    visual-scale: 1.0
+    hp: 12
+    armor: 1
+    hit: 45
+    damage: "1d6"
+    player-armor: true
+    san-check:
+      success: "0"
+      failure: "1d3"
+    encounter-range: 20.0
+    require-line-of-sight: true
+
+  gug:
+    name: "ガグ"
+    entity: ENDERMAN
+    visual-scale: 1.0
+    hp: 22
+    armor: 2
+    hit: 55
+    damage: "2d6"
+    player-armor: true
+    san-check:
+      success: "0"
+      failure: "1d4"
+    encounter-range: 18.0
+    require-line-of-sight: true
+
+  moon_beast:
+    name: "ムーンビースト"
+    entity: RAVAGER
+    visual-scale: 1.0
+    hp: 26
+    armor: 2
+    hit: 60
+    damage: "2d6+1"
+    player-armor: true
+    san-check:
+      success: "1"
+      failure: "1d6"
+    encounter-range: 18.0
+    require-line-of-sight: true
+
+  zoog:
+    name: "ズーグ"
+    entity: SILVERFISH
+    visual-scale: 1.0
+    hp: 6
+    armor: 0
+    hit: 40
+    damage: "1d3"
+    player-armor: true
+    san-check:
+      success: "0"
+      failure: "1"
+    encounter-range: 10.0
+    require-line-of-sight: true
+
+  spider_of_leng:
+    name: "レンの蜘蛛"
+    entity: CAVE_SPIDER
+    visual-scale: 1.0
+    hp: 14
+    armor: 1
+    hit: 50
+    damage: "1d6"
+    player-armor: true
+    san-check:
+      success: "0"
+      failure: "1d3"
+    encounter-range: 14.0
+    require-line-of-sight: true
+
+  shantak:
+    name: "シャンタク鳥"
+    entity: PHANTOM
+    visual-scale: 1.0
+    hp: 20
+    armor: 2
+    hit: 55
+    damage: "1d8+1"
+    player-armor: true
+    san-check:
+      success: "0"
+      failure: "1d3"
+    encounter-range: 24.0
+    require-line-of-sight: true
+

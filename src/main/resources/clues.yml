@@ -1,0 +1,235 @@
+# 手掛かり設定
+#
+# reward:
+#   手掛かりの発見判定に成功した瞬間、自動でアイテムを取得します。
+#   enabled: true
+#   type: key / hammer
+#   key の場合は key-id を設定。display-name は任意です。
+#   取得は探索者×clue-idごとに1回のみで、clue-reward-history.yml に保存されます。
+#
+# critical.text:
+#   目星などでクリティカルした探索者だけが、右クリック閲覧時に得られる追加情報です。
+#
+# fumble:
+#   目星 / 図書館でファンブルしたとき、近くにあるこの情報ポイントへ事故を起こせます。
+#   skills は対象技能ID。空なら spot_hidden / library_use どちらでも対象になります。
+#   destroy-information: true で、その探索者は以後その情報ポイントを通常調査できません。
+#   required: true の手掛かりでは rescue.text を必ず設定してください。
+
+blood:
+  display-name: "血痕"
+  range: 10
+  duration: 30
+  required: false
+  text:
+    - "床には乾いた血痕が残っている。"
+    - "よく見ると、廊下の奥へ続いている。"
+  critical:
+    text:
+      - "血痕の飛び方から、被害者は廊下の奥から入口側へ引きずられた可能性が高い。"
+      - "血の一部だけ乾燥が遅く、事件が一度ではなかったことにも気づく。"
+  fumble:
+    enabled: true
+    skills:
+      - "spot_hidden"
+    range: 10
+    message: "足元の血痕に気を取られ、割れた床材に足を取られた！"
+    damage: "1"
+    blindness-seconds: 0
+    destroy-information: false
+    collapse-sound: false
+    rescue:
+      text: []
+  san-check:
+    enabled: true
+    success: "0"
+    failure: "1d3"
+
+bookshelf:
+  display-name: "古い本棚"
+  range: 8
+  duration: 30
+  required: true
+  text:
+    - "本棚の奥に不自然な隙間がある。"
+    - "古い記録の一部に、地下室についての記述が残っている。"
+  critical:
+    text:
+      - "本の並び順が年代順ではなく、特定の日付を示す暗号になっていることに気づく。"
+      - "その日付は地下室で儀式が行われた日と一致する。"
+  fumble:
+    enabled: true
+    skills:
+      - "spot_hidden"
+      - "library_use"
+    range: 8
+    message: "無理に本を引き抜いた瞬間、腐食していた本棚が大きな音を立てて崩れた！"
+    damage: "1d3"
+    blindness-seconds: 8
+    blindness-amplifier: 0
+    destroy-information: true
+    collapse-sound: true
+    rescue:
+      text:
+        - "崩れた本の間から破れた一枚の紙だけが見つかる。"
+        - "『地下室の鍵は管理人室に保管する』という一文は辛うじて読める。"
+  san-check:
+    enabled: false
+    success: "0"
+    failure: "0"
+
+blood_magic_circle:
+  display-name: "血で描かれた魔法陣"
+  range: 10
+  duration: 30
+  required: false
+  text:
+    - "床一面に、乾いた血で巨大な魔法陣が描かれている。"
+    - "線の一部は文字のようにも見えるが、人間の言語とは思えない。"
+    - "見つめていると、模様そのものが僅かに脈打っているような錯覚を覚える。"
+  critical:
+    text:
+      - "血の乾き方が均一ではない。魔法陣は一度に描かれたものではなく、何度も描き足されている。"
+      - "中心部だけ血の向きが逆であり、何かを『呼ぶ』より『閉じ込める』ための構造に見える。"
+  fumble:
+    enabled: true
+    skills: ["spot_hidden", "occult"]
+    range: 10
+    message: "魔法陣を凝視した瞬間、視界が血のような赤黒さに染まった！"
+    damage: "0"
+    blindness-seconds: 6
+    blindness-amplifier: 0
+    destroy-information: false
+    collapse-sound: false
+    rescue:
+      text: []
+  san-check:
+    enabled: true
+    success: "0"
+    failure: "1d6"
+
+observer_record:
+  display-name: "観測者の記録"
+  range: 8
+  duration: 45
+  required: true
+  text:
+    - "古びた記録用紙には、同じ部屋を何日にもわたって観測した記録が残されている。"
+    - "『照明器具なし。窓なし。それでも室内照度は一定』と繰り返し記されている。"
+    - "最後のページには、『光源を探してはいけない。向こうもこちらを観測している』と走り書きされている。"
+  critical:
+    text:
+      - "記録時刻を追うと、部屋が明るくなる周期と観測者の睡眠時間が奇妙に一致している。"
+      - "余白に消されかけた一文――『光ではない。あれは視線だ』――を読み取れる。"
+  fumble:
+    enabled: true
+    skills: ["spot_hidden", "library_use"]
+    range: 8
+    message: "劣化した記録をめくった瞬間、紙が裂けて何枚かが崩れ落ちた！"
+    damage: "0"
+    blindness-seconds: 0
+    destroy-information: true
+    collapse-sound: false
+    rescue:
+      text:
+        - "大半は読めなくなったが、最後のページの一文だけは残っている。"
+        - "『光源を探してはいけない。向こうもこちらを観測している』"
+  san-check:
+    enabled: false
+    success: "0"
+    failure: "0"
+
+unnaturally_bright_room:
+  display-name: "何故か明るい部屋"
+  range: 12
+  duration: 30
+  required: false
+  text:
+    - "窓も照明も見当たらないのに、部屋全体が薄白く照らされている。"
+    - "物体の影は極端に薄く、光が一方向から差しているようには見えない。"
+    - "天井、壁、床のどこを見ても光源らしいものは存在しない。"
+  critical:
+    text:
+      - "自分が動くよりほんの僅かに早く、床の薄い影が動いていることに気づく。"
+      - "この明るさは光源によるものではなく、部屋そのものに付随した異常現象かもしれない。"
+  fumble:
+    enabled: true
+    skills: ["spot_hidden"]
+    range: 12
+    message: "光源を探して目を凝らした瞬間、白い残像が視界を覆った！"
+    damage: "0"
+    blindness-seconds: 5
+    blindness-amplifier: 0
+    destroy-information: false
+    collapse-sound: false
+    rescue:
+      text: []
+  san-check:
+    enabled: false
+    success: "0"
+    failure: "0"
+
+# ===== 白い部屋シナリオ用 =====
+cell_floor:
+  display-name: "床の擦り傷"
+  range: 8
+  duration: 30
+  required: true
+  text:
+    - "壁際の床に、不自然な擦り傷が残っている。"
+    - "傷の先を探ると、隙間に小さな鉄の鍵が隠されていた。"
+  critical:
+    text:
+      - "擦り傷は何度も同じ場所を動かした跡だ。鍵の隠し場所をすぐに特定できた。"
+  fumble:
+    enabled: true
+    skills: ["spot_hidden"]
+    range: 8
+    message: "家具を動かした拍子に大きな音を立ててしまった！"
+    damage: "0"
+    blindness-seconds: 0
+    destroy-information: false
+    collapse-sound: true
+    rescue:
+      text: []
+  san-check:
+    enabled: false
+    success: "0"
+    failure: "0"
+  reward:
+    enabled: true
+    type: "key"
+    key-id: "cell_key"
+    display-name: "監禁部屋の鍵"
+
+storage_tools:
+  display-name: "物資保管庫の工具"
+  range: 8
+  duration: 30
+  required: true
+  text:
+    - "大量の物資に混じって、補修・解体用の重量工具を発見した。"
+    - "かなり重いが、脆い壁を破壊するには十分そうだ。"
+  critical:
+    text:
+      - "工具の状態は良好だ。黒い脆い壁なら問題なく破壊できそうだ。"
+  fumble:
+    enabled: true
+    skills: ["spot_hidden"]
+    range: 8
+    message: "樽を崩してしまい、倉庫中に大きな音が響いた！"
+    damage: "0"
+    blindness-seconds: 0
+    destroy-information: false
+    collapse-sound: true
+    rescue:
+      text: []
+  san-check:
+    enabled: false
+    success: "0"
+    failure: "0"
+  reward:
+    enabled: true
+    type: "hammer"
+    display-name: "教団の大型ハンマー"
+

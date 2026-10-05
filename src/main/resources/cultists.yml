@@ -1,0 +1,134 @@
+# 「白い部屋」祭壇用 狂信者設定
+# /cultist setupaltar で今回のマップの祭壇へ5体を一括配置します。
+
+enabled: true
+
+detection:
+  # 通常状態で探索者を発見できる距離
+  range: 10.0
+  # しゃがみ中の探索者は発見しにくくなる
+  sneaking-range: 5.0
+  # 正面視野角。背後なら距離内でも原則発見しない
+  field-of-view-degrees: 105.0
+  scan-period-ticks: 5
+
+appearance:
+  name-visible: true
+
+messages:
+  alert: "&4&l『器が逃げたぞ！』"
+  alert-radius: 30.0
+  stealth-success: "&2[隠密] &f{skill}成功。&a{seconds}秒間、狂信者に発見されにくくなった。"
+  stealth-fumble: "&4☠ 隠密に失敗し、大きな物音を立ててしまった。"
+  stealth-fumble-alert: "&4☠ 大きな物音を立てた！ 近くの狂信者がこちらに気付いた！"
+  alarm-lock: "&4[警報] &c隔離扉が自動施錠された！"
+  reinforcements: "&4[警報] &c増援の狂信者が駆けつけた！"
+
+# 今回のマップの祭壇中心。
+# Mobの足元Yとして -58 を使用しています。
+altar:
+  y: -58.0
+  center:
+    x: 12.0
+    z: -5.0
+
+roles:
+  normal:
+    name: "&4狂信者"
+    hp: 11
+    hit: 45
+    damage: "1d4"
+    armor: 0
+    player-armor: true
+
+  priest:
+    name: "&5儀式司祭"
+    hp: 13
+    hit: 50
+    damage: "1d6"
+    armor: 0
+    player-armor: true
+
+# 「隠れる」「忍び歩き」の技能判定と索敵の連動設定。
+# 効果中にもう一方の技能にも成功すると、range-multiplier は掛け合わせて適用されます。
+stealth-skills:
+  hide:
+    success:
+      seconds: 20
+      range-multiplier: 0.45
+      fov-multiplier: 0.80
+    special:
+      seconds: 25
+      range-multiplier: 0.30
+      fov-multiplier: 0.65
+    critical:
+      seconds: 30
+      range-multiplier: 0.15
+      fov-multiplier: 0.45
+    fumble-alert-radius: 16.0
+
+  sneak:
+    success:
+      seconds: 20
+      range-multiplier: 0.60
+    special:
+      seconds: 25
+      range-multiplier: 0.45
+    critical:
+      seconds: 30
+      range-multiplier: 0.30
+    fumble-alert-radius: 16.0
+
+
+# 警報発生時に鉄扉を自動施錠する。
+# hardlock: false のため、探索者は鍵開け技能で突破可能。
+alarm-door-lock:
+  enabled: true
+  hardlock: false
+  key-id: ""
+  doors:
+    - {x: 5,  y: -59, z: -12}
+    - {x: 13, y: -59, z: -10}
+
+# 警報発生後の増援。1警報につき1波だけ。
+# 生存上限を超えて増殖しない。
+reinforcements:
+  enabled: true
+  delay-ticks: 30        # 1.5秒後
+  per-wave: 3
+  max-alive: 3
+  spawn-points:
+    - {x: 6.5,  y: -58.0, z: -12.5}
+    - {x: 21.5, y: -58.0, z: -14.5}
+    - {x: 10.5, y: -58.0, z: -18.5}
+
+# 探索者が発見された瞬間の警報・照明演出。
+# LIGHTブロックは不可視で当たり判定がなく、演出終了後に元の状態へ戻ります。
+alarm:
+  enabled: true
+  duration-ticks: 120          # 6秒
+  flash-interval-ticks: 10     # 0.5秒ごとに点滅
+  player-radius: 32.0
+  center-y: -56.0
+  light-level-bright: 15
+  light-level-dark: 0
+
+  title:
+    enabled: true
+    title: "&4&l警報"
+    subtitle: "&c発見された――逃げろ！"
+
+  sound:
+    enabled: true
+    volume: 1.1
+
+  particles:
+    enabled: true
+    count: 30
+
+  # 今回の赤い祭壇上部。空気/LIGHTの場所だけが点滅対象になります。
+  lights:
+    - {x: 9,  y: -56, z: -5}
+    - {x: 12, y: -56, z: -5}
+    - {x: 15, y: -56, z: -5}
+    - {x: 12, y: -56, z: -2}

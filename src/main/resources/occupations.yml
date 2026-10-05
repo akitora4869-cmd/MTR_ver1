@@ -1,0 +1,219 @@
+# CoC第6版 基本ルールブック p.48「職業のサンプル」を基にした職業定義
+#
+# fixed-skills:
+#   職業名が一致した時点で自動的に職業技能になる技能。
+#
+# restricted-choice:
+#   count 個を skills の候補から選択する枠。
+#
+# free-choice-count:
+#   「個人的あるいはその時代の特色的な技能」として自由に選択できる枠。
+#
+# 登録職業に一致しない職業名はオリジナル職業として扱い、
+# config.yml の occupation.custom.max-selected-skills まで自由選択できます。
+
+occupations:
+  doctor:
+    name: "医師"
+    aliases: ["医者"]
+    point-formula: "EDU*20"
+    fixed-skills: [medicine, first_aid, credit_rating, psychology, psychoanalysis, biology, other_language, pharmacy]
+    free-choice-count: 1
+
+  engineer:
+    name: "エンジニア"
+    aliases: ["技師"]
+    point-formula: "EDU*20"
+    fixed-skills: [chemistry, mechanical_repair, operate_heavy_machinery, electrical_repair, geology, library_use, physics]
+    free-choice-count: 1
+
+  entertainer:
+    name: "エンターテイナー"
+    aliases: ["芸能人"]
+    point-formula: "EDU*20"
+    fixed-skills: [fast_talk, dodge, listen, art, credit_rating, psychology, disguise]
+    free-choice-count: 1
+
+  professor:
+    name: "教授"
+    aliases: []
+    point-formula: "EDU*20"
+    fixed-skills: [credit_rating, psychology, persuade, library_use, bargain, other_language]
+    restricted-choice:
+      count: 2
+      skills: [medicine, chemistry, archaeology, anthropology, biology, geology, electronics, astronomy, natural_history, physics, law, history]
+    free-choice-count: 0
+
+  fanatic:
+    name: "狂信者"
+    aliases: []
+    point-formula: "EDU*20"
+    fixed-skills: [conceal, hide, psychology, persuade, library_use]
+    restricted-choice:
+      count: 2
+      skills: [chemistry, electrical_repair, law, pharmacy, rifle]
+    free-choice-count: 1
+
+  military_officer:
+    name: "軍士官"
+    aliases: ["士官"]
+    point-formula: "EDU*20"
+    fixed-skills: [accounting, credit_rating, psychology, persuade, navigate, bargain, law]
+    free-choice-count: 1
+
+  police_officer:
+    name: "警官"
+    aliases: ["警察官"]
+    point-formula: "EDU*20"
+    fixed-skills: [fast_talk, first_aid, dodge, grapple, psychology, law]
+    restricted-choice:
+      count: 2
+      skills: [drive_auto, ride, bargain, martial_arts, spot_hidden]
+    free-choice-count: 0
+
+  detective:
+    name: "刑事"
+    aliases: []
+    point-formula: "EDU*20"
+    fixed-skills: [fast_talk, listen, psychology, persuade, bargain, law, spot_hidden]
+    free-choice-count: 1
+
+  artist:
+    name: "芸術家"
+    aliases: []
+    point-formula: "EDU*20"
+    fixed-skills: [fast_talk, art, photography, psychology, craft, spot_hidden, history]
+    free-choice-count: 1
+
+  antiquarian:
+    name: "古物研究家"
+    aliases: ["古物研究者"]
+    point-formula: "EDU*20"
+    fixed-skills: [art, craft, library_use, bargain, other_language, spot_hidden, history]
+    free-choice-count: 1
+
+  writer:
+    name: "作家"
+    aliases: []
+    point-formula: "EDU*20"
+    fixed-skills: [occult, psychology, persuade, library_use, other_language, own_language, history]
+    free-choice-count: 1
+
+  journalist:
+    name: "ジャーナリスト"
+    aliases: ["記者"]
+    point-formula: "EDU*20"
+    fixed-skills: [fast_talk, photography, psychology, persuade, library_use, own_language, history]
+    free-choice-count: 1
+
+  private_investigator:
+    name: "私立探偵"
+    aliases: ["探偵"]
+    point-formula: "EDU*20"
+    fixed-skills: [fast_talk, locksmith, photography, psychology, library_use, bargain, law]
+    free-choice-count: 1
+
+  spokesman:
+    name: "スポークスマン"
+    aliases: ["広報"]
+    point-formula: "EDU*20"
+    fixed-skills: [fast_talk, dodge, credit_rating, psychology, persuade, disguise]
+    free-choice-count: 1
+
+  sportsman:
+    name: "スポーツ選手"
+    aliases: ["アスリート"]
+    point-formula: "EDU*20"
+    fixed-skills: [dodge, ride, swim, throw, jump, martial_arts]
+    free-choice-count: 1
+
+  clergy:
+    name: "聖職者"
+    aliases: []
+    point-formula: "EDU*20"
+    fixed-skills: [listen, accounting, psychology, persuade, library_use, other_language, history]
+    free-choice-count: 1
+
+  parapsychologist:
+    name: "超心理学者"
+    aliases: []
+    point-formula: "EDU*20"
+    fixed-skills: [occult, anthropology, photography, psychology, library_use, other_language, history]
+    free-choice-count: 1
+
+  dilettante:
+    name: "ディレッタント"
+    aliases: []
+    point-formula: "EDU*20"
+    fixed-skills: [art, ride, shotgun, credit_rating, craft, other_language]
+    free-choice-count: 2
+
+  missionary:
+    name: "伝道者"
+    aliases: ["宣教師"]
+    point-formula: "EDU*20"
+    fixed-skills: [medicine, first_aid, mechanical_repair, art, persuade, natural_history]
+    free-choice-count: 1
+
+  tribe_member:
+    name: "トライブ・メンバー"
+    aliases: ["トライブメンバー"]
+    point-formula: "EDU*20"
+    fixed-skills: [occult, listen, swim, throw, bargain, natural_history, spot_hidden]
+    free-choice-count: 1
+
+  farm_forestry_worker:
+    name: "農林業作業者"
+    aliases: ["農林業従事者"]
+    point-formula: "EDU*20"
+    fixed-skills: [first_aid, mechanical_repair, operate_heavy_machinery, craft, track, electrical_repair, natural_history]
+    free-choice-count: 1
+
+  pilot:
+    name: "パイロット"
+    aliases: []
+    point-formula: "EDU*20"
+    fixed-skills: [mechanical_repair, operate_heavy_machinery, electrical_repair, pilot, astronomy, navigate, physics]
+    free-choice-count: 1
+
+  hacker_consultant:
+    name: "ハッカー／コンサルタント"
+    aliases: ["ハッカー/コンサルタント", "ハッカー", "コンサルタント"]
+    point-formula: "EDU*20"
+    fixed-skills: [fast_talk, computer_use, electrical_repair, electronics, library_use, physics, other_language]
+    free-choice-count: 1
+
+  criminal:
+    name: "犯罪者"
+    aliases: []
+    point-formula: "EDU*20"
+    fixed-skills: [fast_talk, locksmith, handgun, sneak, bargain, disguise, spot_hidden]
+    free-choice-count: 1
+
+  soldier:
+    name: "兵士"
+    aliases: ["軍人"]
+    point-formula: "EDU*20"
+    fixed-skills: [first_aid, dodge, conceal, mechanical_repair, listen, sneak, rifle]
+    free-choice-count: 1
+
+  lawyer:
+    name: "弁護士"
+    aliases: []
+    point-formula: "EDU*20"
+    fixed-skills: [fast_talk, credit_rating, psychology, persuade, library_use, bargain, law]
+    free-choice-count: 1
+
+  drifter:
+    name: "放浪者"
+    aliases: []
+    point-formula: "EDU*20"
+    fixed-skills: [fast_talk, hide, listen, sneak, psychology, bargain, natural_history]
+    free-choice-count: 1
+
+  musician:
+    name: "ミュージシャン"
+    aliases: ["音楽家"]
+    point-formula: "EDU*20"
+    fixed-skills: [fast_talk, listen, art, craft, persuade, psychology, bargain]
+    free-choice-count: 1

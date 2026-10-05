@@ -1,0 +1,1180 @@
+# ============================================================
+# 共通クリティカル / ファンブル効果エンジン
+# ============================================================
+# すべての技能判定は自動的にこのエンジンを通ります。
+# 将来 skills: に新しい技能を追加しても Java 側の登録作業は不要です。
+#
+# 各技能には以下を任意追加できます:
+#   critical:
+#     enabled: true
+#     inherit-defaults: true
+#     effects: [ ... ]
+#   fumble:
+#     enabled: true
+#     inherit-defaults: true
+#     effects: [ ... ]
+#
+# 使用可能 type:
+# message, damage, heal-hp, heal-san, lose-san, blindness, potion,
+# knockback, command, clue-fumble, clue-discover, repeat-success-effect
+#
+# amount は 1 / 1d3 / 1d6+1 等に対応。
+# command では {player} {skill} {skill_id} {result} を使用できます。
+critical-fumble:
+  defaults:
+    critical:
+      enabled: true
+      effects:
+      - type: message
+        text: "&6★ {skill} クリティカル！ 通常より良い結果を得ました。"
+    fumble:
+      enabled: true
+      effects:
+      - type: message
+        text: "&4☠ {skill} ファンブル！ 状況が悪化しました。"
+
+# CoC第6版向け技能設定
+#
+# 探索者シートでは、CoC6版に近い
+# 「戦闘技能 → 探索技能 → 行動技能 → 交渉技能 → 知識技能」
+# の順で表示します。
+#
+# default は数字のほか "EDU*5" / "DEX*2" のような能力値式にも対応します。
+
+skills:
+  # ---------------- 戦闘技能 ----------------
+  dodge:
+    name: "回避"
+    default: "DEX*2"
+    category: "戦闘技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 完璧な回避！ 次の動きへ繋げやすい体勢を確保しました。'
+      - type: potion
+        effect: SPEED
+        seconds: 5
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 回避に失敗し、大きく体勢を崩しました。'
+      - type: potion
+        effect: SLOW
+        seconds: 4
+        amplifier: 1
+  kick:
+    name: "キック"
+    default: 25
+    category: "戦闘技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 強烈なキックが決まりました。KPは追加の有利な結果を与えられます。'
+      - type: potion
+        effect: INCREASE_DAMAGE
+        seconds: 4
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 蹴りを外して足元が乱れました。'
+      - type: potion
+        effect: SLOW
+        seconds: 4
+        amplifier: 0
+  fist:
+    name: "こぶし"
+    default: 50
+    category: "戦闘技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 急所を捉える一撃！ KPは追加効果を与えられます。'
+      - type: potion
+        effect: INCREASE_DAMAGE
+        seconds: 4
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 空振りで姿勢を崩しました。'
+      - type: potion
+        effect: WEAKNESS
+        seconds: 4
+        amplifier: 0
+  martial_arts:
+    name: "マーシャルアーツ"
+    default: 1
+    category: "戦闘技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 技が完璧に決まり、戦闘の主導権を握りました。'
+      - type: potion
+        effect: DAMAGE_RESISTANCE
+        seconds: 5
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 技の入りを誤り、隙を晒しました。'
+      - type: potion
+        effect: WEAKNESS
+        seconds: 5
+        amplifier: 0
+  sword:
+    name: "刀剣"
+    default: 20
+    category: "戦闘技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 刀剣の扱いが冴え、理想的な一撃になりました。'
+      - type: potion
+        effect: INCREASE_DAMAGE
+        seconds: 4
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 刀剣の扱いを誤り、体勢が崩れました。'
+      - type: potion
+        effect: SLOW
+        seconds: 4
+        amplifier: 0
+  grapple:
+    name: "組みつき"
+    default: 25
+    category: "戦闘技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 完全に相手の動きを制しました。'
+      - type: potion
+        effect: DAMAGE_RESISTANCE
+        seconds: 5
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 組みつきに失敗し、自分が大きくよろめきました。'
+      - type: knockback
+        power: 0.5
+        upward: 0.15
+  handgun:
+    name: "拳銃"
+    default: 20
+    category: "戦闘技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 正確な射撃！ KPは急所命中などの追加効果を与えられます。'
+      - type: potion
+        effect: SPEED
+        seconds: 3
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 射撃姿勢を崩し、照準が乱れました。'
+      - type: potion
+        effect: SLOW
+        seconds: 4
+        amplifier: 0
+  shotgun:
+    name: "ショットガン"
+    default: 30
+    category: "戦闘技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 理想的な散弾射撃！ KPは追加の有利な結果を与えられます。'
+      - type: potion
+        effect: DAMAGE_RESISTANCE
+        seconds: 3
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 反動に振り回され、体勢を崩しました。'
+      - type: knockback
+        power: 0.7
+        upward: 0.18
+  rifle:
+    name: "ライフル"
+    default: 25
+    category: "戦闘技能"
+
+  # ---------------- 探索技能 ----------------
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 狙いが完璧に定まりました。KPは追加の命中効果を与えられます。'
+      - type: potion
+        effect: SPEED
+        seconds: 3
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 狙いを大きく外し、再照準に手間取ります。'
+      - type: potion
+        effect: SLOW
+        seconds: 5
+        amplifier: 0
+  first_aid:
+    name: "応急手当"
+    default: 30
+    category: "探索技能"
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: repeat-success-effect
+        times: 1
+      - type: message
+        text: '&6★ 応急手当クリティカル：通常成功分を追加でもう一度適用しました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: damage
+        amount: '1'
+      - type: message
+        text: '&4☠ 処置を誤り、対象に余計な負担を与えました。'
+  locksmith:
+    name: "鍵開け"
+    default: 1
+    category: "探索技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 鍵の構造を完全に読み切りました。KPは短時間での解錠や痕跡を残さない解錠として扱えます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ ピックが噛み、鍵穴を悪化させました。KPは再挑戦条件を厳しくできます。'
+      - type: potion
+        effect: SLOW
+        seconds: 3
+        amplifier: 0
+  conceal:
+    name: "隠す"
+    default: 15
+    category: "探索技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 完璧に隠蔽できました。通常より発見されにくい状態です。'
+      - type: potion
+        effect: INVISIBILITY
+        seconds: 8
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 隠したつもりが逆に不自然な痕跡を残しました。'
+  hide:
+    name: "隠れる"
+    default: 10
+    category: "探索技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: repeat-success-effect
+        times: 1
+      - type: message
+        text: '&6★ 周囲に溶け込むように隠れました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 隠れ場所を誤り、かえって目立ってしまいました。'
+      - type: potion
+        effect: GLOWING
+        seconds: 5
+        amplifier: 0
+  listen:
+    name: "聞き耳"
+    default: 25
+    category: "探索技能"
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 微かな音まで聞き分けました。KPは音源・人数・方向など追加情報を提示できます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 大きな物音や耳鳴りに惑わされ、周囲の把握を失いました。'
+      - type: blindness
+        seconds: 5
+        amplifier: 0
+  sneak:
+    name: "忍び歩き"
+    default: 10
+    category: "探索技能"
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: potion
+        effect: SPEED
+        seconds: 20
+        amplifier: 1
+      - type: message
+        text: '&6★ 物音をほぼ立てず、素早く移動できます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: potion
+        effect: SLOW
+        seconds: 8
+        amplifier: 1
+      - type: message
+        text: '&4☠ 大きな物音を立て、足取りも乱れました。'
+  photography:
+    name: "写真術"
+    default: 10
+    category: "探索技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 決定的な瞬間を鮮明に記録しました。KPは写真に追加情報を写り込ませられます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ ピンぼけ・露出失敗などで重要部分を記録できませんでした。必須情報なら別の確認手段を残してください。'
+  psychoanalysis:
+    name: "精神分析"
+    default: 1
+    category: "探索技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: repeat-success-effect
+        times: 1
+      - type: message
+        text: '&6★ 的確な精神分析で、通常成功以上の安定を与えました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 言葉選びを誤り、相手を一時的に不安定にしました。'
+      - type: lose-san
+        amount: '1'
+  track:
+    name: "追跡"
+    default: 10
+    category: "探索技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 足跡だけでなく移動速度・人数・状態まで推測できます。KPは追加情報を提示できます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 痕跡を読み違え、誤った方向へ誘導されました。KPは偽の手掛かりを提示できます。'
+  library_use:
+    name: "図書館"
+    default: 25
+    category: "探索技能"
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: clue-fumble
+      - type: message
+        text: '&4☠ 資料を取り違えたり崩したりしました。必須情報には救済情報が適用されます。'
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: clue-discover
+      - type: message
+        text: '&6★ 資料の核心へ素早く辿り着きました。追加情報があれば提示されます。'
+  spot_hidden:
+    name: "目星"
+    default: 25
+    category: "探索技能"
+    # クリティカル時の追加情報は通常成功処理が CheckResult.CRITICAL を受け取り、
+    # ClueManager 側で自動的に critical.text を扱うため追加設定不要です。
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: clue-fumble
+      - type: message
+        text: '&4☠ 周囲の物を壊す・見誤るなどの事故が発生しました。必須情報には救済措置が適用されます。'
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 通常では見落とす細部まで見抜きました。手掛かりにcritical.textがあれば追加表示されます。'
+  drive_auto:
+    name: "運転（自動車）"
+    default: 20
+    category: "行動技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 完璧な運転操作！ 危険を最小限に抑えて切り抜けました。'
+      - type: potion
+        effect: SPEED
+        seconds: 5
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 操作を誤り、強い衝撃を受けました。'
+      - type: damage
+        amount: 1d3
+  mechanical_repair:
+    name: "機械修理"
+    default: 20
+    category: "行動技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 故障原因を正確に特定し、通常より良い状態まで修復できました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 修理を誤り、部品を傷めました。KPは追加部品や再挑戦条件を要求できます。'
+  operate_heavy_machinery:
+    name: "重機械操作"
+    default: 1
+    category: "行動技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 重機を精密に操作し、想定以上の成果を出しました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 操作ミスで激しく揺さぶられました。'
+      - type: damage
+        amount: 1d3
+  ride:
+    name: "乗馬"
+    default: 5
+    category: "行動技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 騎乗対象と完全に呼吸が合いました。'
+      - type: potion
+        effect: SPEED
+        seconds: 8
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 騎乗姿勢を崩し、転落しかけました。'
+      - type: knockback
+        power: 0.8
+        upward: 0.25
+  swim:
+    name: "水泳"
+    default: 25
+    category: "行動技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: repeat-success-effect
+        times: 1
+      - type: message
+        text: '&6★ 水中で非常に安定して行動できます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 水を飲み、呼吸と視界が乱れました。'
+      - type: blindness
+        seconds: 4
+        amplifier: 0
+  art:
+    name: "芸術"
+    default: 5
+    category: "行動技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 強い印象を残す作品・演技になりました。KPは追加評価や情報を与えられます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 表現を大きく誤り、意図とは逆の印象を与えました。'
+  craft:
+    name: "製作"
+    default: 5
+    category: "行動技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 予想以上に高品質なものを製作できました。KPは耐久性や性能を上乗せできます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 製作中に材料を破損しました。KPは材料消費や再挑戦条件を設定できます。'
+  pilot:
+    name: "操縦"
+    default: 1
+    category: "行動技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 完璧な操縦で危険な状況を切り抜けました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 操縦ミスで強い衝撃を受けました。'
+      - type: damage
+        amount: 1d3
+  jump:
+    name: "跳躍"
+    default: 25
+    category: "行動技能"
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: potion
+        effect: JUMP
+        seconds: 30
+        amplifier: 2
+      - type: message
+        text: '&6★ 驚異的な跳躍！ しばらく跳躍力が上昇します。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: damage
+        amount: 1d3
+      - type: knockback
+        power: 0.8
+        upward: 0.25
+      - type: message
+        text: '&4☠ 着地に失敗して転倒しました。'
+  throw:
+    name: "投擲"
+    default: 25
+    category: "行動技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 狙い通りの投擲！ KPは命中位置や追加効果を優遇できます。'
+      - type: potion
+        effect: SPEED
+        seconds: 3
+        amplifier: 0
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 投擲を大きく外し、体勢も乱れました。'
+      - type: potion
+        effect: SLOW
+        seconds: 3
+        amplifier: 0
+  electrical_repair:
+    name: "電気修理"
+    default: 10
+    category: "行動技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 配線状態を完全に把握し、安全かつ確実に修復しました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 感電・短絡事故が発生しました。'
+      - type: damage
+        amount: 1d3
+  navigate:
+    name: "ナビゲート"
+    default: 10
+    category: "行動技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 最短かつ安全な経路を割り出しました。KPは近道や危険回避情報を提示できます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 方角を読み違えました。KPは遠回りや一時的な迷走を発生させられます。'
+  disguise:
+    name: "変装"
+    default: 1
+    category: "行動技能"
+
+  # ---------------- 交渉技能 ----------------
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 細部まで自然な変装になりました。KPは見破り判定をより難しくできます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 不自然な変装になり、逆に印象へ強く残りました。'
+      - type: potion
+        effect: GLOWING
+        seconds: 5
+        amplifier: 0
+  fast_talk:
+    name: "言いくるめ"
+    default: 5
+    category: "交渉技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 相手の判断を一瞬で誘導しました。KPは追加の譲歩を与えられます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 話の矛盾を突かれ、相手の警戒心を強めました。'
+  credit_rating:
+    name: "信用"
+    default: 15
+    category: "交渉技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 社会的信用が最大限に働きました。通常では難しい協力も得られる可能性があります。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 信用を損ねる言動になり、相手の態度が悪化しました。'
+  persuade:
+    name: "説得"
+    default: 15
+    category: "交渉技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 相手が深く納得しました。KPは通常以上の協力や情報を与えられます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 説得が逆効果となり、相手を頑なにしてしまいました。'
+  bargain:
+    name: "値切り"
+    default: 5
+    category: "交渉技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 交渉を有利にまとめました。KPは価格・条件・交換内容をさらに優遇できます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 交渉材料を失い、条件が悪化しました。'
+  own_language:
+    name: "母国語"
+    default: "EDU*5"
+    category: "交渉技能"
+
+  # ---------------- 知識技能 ----------------
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 言外の含意や古い表現まで正確に読み取りました。追加情報を得られます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 文意を取り違えました。必須情報の場合は別文献・別人物から確認できる救済を用意してください。'
+  medicine:
+    name: "医学"
+    default: 5
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: repeat-success-effect
+        times: 1
+      - type: message
+        text: '&6★ 医学的処置が非常に良好で、通常成功分を追加適用しました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 診断・処置を誤り、状態を悪化させました。'
+      - type: damage
+        amount: '1'
+  occult:
+    name: "オカルト"
+    default: 5
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 儀式・象徴・伝承の背景まで結び付けて理解しました。KPは追加情報を提示できます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 俗説や誤った伝承を本物と思い込みました。KPは偽情報を提示できます。'
+  chemistry:
+    name: "化学"
+    default: 1
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 成分や反応を正確に特定しました。KPは追加の分析結果を提示できます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 反応を誤り、薬品事故が発生しました。'
+      - type: damage
+        amount: 1d3
+  cthulhu_mythos:
+    name: "クトゥルフ神話"
+    default: 0
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 神話的存在・現象の核心へ迫りました。KPは通常以上の神話情報を提示できます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 神話知識を誤って結び付け、恐ろしい誤認をしました。'
+      - type: lose-san
+        amount: '1'
+  accounting:
+    name: "経理"
+    default: 10
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 数字の不自然さから資金の流れや隠蔽まで見抜きました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 帳簿の読み方を誤り、重要な数字を取り違えました。'
+  archaeology:
+    name: "考古学"
+    default: 1
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 遺物・遺構の年代や文化背景まで詳しく特定しました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 年代や文化圏を誤認しました。KPは後で訂正可能な矛盾を残してください。'
+  computer_use:
+    name: "コンピューター"
+    default: 1
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 必要なデータへ素早く到達し、追加情報まで確保しました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 操作ミスで一時的に作業環境を悪化させました。'
+      - type: blindness
+        seconds: 3
+        amplifier: 0
+  electronics:
+    name: "電子工学"
+    default: 1
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 回路の仕組みを完全に把握し、精密に扱えました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 回路を短絡させ、軽い感電を受けました。'
+      - type: damage
+        amount: '1'
+  psychology:
+    name: "心理学"
+    default: 5
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 表情・声・仕草から相手の本心にかなり近づきました。KPは追加心理情報を提示できます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 相手の感情を真逆に読み違えました。KPは誤った印象を提示できます。'
+  anthropology:
+    name: "人類学"
+    default: 1
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 文化・習俗の背景や社会的意味まで読み解きました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 習俗を誤解し、不適切な解釈をしてしまいました。'
+  biology:
+    name: "生物学"
+    default: 1
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 生物の状態・由来・異常まで詳しく見抜きました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 種類や状態を誤認しました。KPは後から検証できる手段を残してください。'
+  geology:
+    name: "地質学"
+    default: 1
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 地層・岩石から年代や環境変化まで詳細に判断しました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 地質を読み違え、危険な場所を安全だと判断しかけました。'
+  astronomy:
+    name: "天文学"
+    default: 1
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 星の位置や天体現象から時刻・方角・異常まで読み取れました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 天体の位置を読み違え、時刻や方角を誤認しました。'
+  natural_history:
+    name: "博物学"
+    default: 10
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 自然環境の僅かな違和感から重要な手掛かりを見抜きました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 自然現象を誤認し、危険の兆候を見落としました。'
+  physics:
+    name: "物理学"
+    default: 1
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 現象の仕組みを正確にモデル化し、結果まで予測できました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 計算・前提を誤り、結果を大きく見積もり違えました。'
+  law:
+    name: "法律"
+    default: 5
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 条文・判例・手続きの有利な点まで思い出しました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 法的根拠を取り違えました。KPは後から訂正できる確認手段を用意してください。'
+  pharmacy:
+    name: "薬学"
+    default: 1
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 薬品の作用・用量・危険な組み合わせまで正確に判断しました。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 薬品を取り違え、軽い体調悪化を起こしました。'
+      - type: potion
+        effect: CONFUSION
+        seconds: 5
+        amplifier: 0
+  history:
+    name: "歴史"
+    default: 20
+    category: "知識技能"
+
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 出来事同士の関連や隠れた背景まで思い出しました。KPは追加情報を提示できます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 年代や人物を混同しました。必須情報の場合は資料確認などの救済を用意してください。'
+  other_language:
+    name: "他の言語"
+    default: 1
+    category: "知識技能"
+    critical:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&6★ 細かなニュアンスや古語まで正確に理解しました。KPは追加情報を提示できます。'
+    fumble:
+      enabled: true
+      inherit-defaults: false
+      effects:
+      - type: message
+        text: '&4☠ 単語や文意を誤訳しました。必須情報の場合は再確認手段を残してください。'
